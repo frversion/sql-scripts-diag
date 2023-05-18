@@ -1,7 +1,5 @@
 
 
-
-
 IF OBJECT_ID('tempdb..#Blocks') IS NOT NULL DROP TABLE #Blocks
 
 SELECT spid,blocked,REPLACE(REPLACE(st.TEXT, CHAR(10),' '),CHAR(13),' ') batch 
@@ -16,7 +14,9 @@ AS
 FROM #Blocks blc 
 WHERE (blc.blocked = 0 OR blc.blocked = SPID) 
 	AND EXISTS (SELECT * FROM #Blocks blc2 WHERE blc2.BLOCKED = blc.SPID AND blc2.BLOCKED <> blc2.SPID)
+
 UNION ALL
+
 SELECT blc.spid,blc.blocked,CAST(bt.[level] + RIGHT (CAST ((1000 + blc.SPID) AS VARCHAR (100)), 4) AS VARCHAR (1000)) [level],
 	blc.batch
 FROM #Blocks blc 
